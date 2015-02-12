@@ -1,21 +1,27 @@
 ROTOR_I_WIRING = 'EKMFLGDQVZNTOWYHXUSPAIBRCJ'
+
+def shift_num(n, offset = 0):
+    result = n + offset
+    while result < 0:
+        result += 26
+    return result % 26
 def alphaord(c):
     return ord(c)-ord("A")
 
 def ordalpha(n):
     return chr(n+ord("A"))
-
+def construct_reverse_shifts(rotor_wiring):
+    results = 26 * [None]
+    for i in range(26):
+        shift =  -(alphaord(rotor_wiring[i]) - i)
+        results[alphaord(rotor_wiring[i])] = shift
+    return results
 def construct_shifts(rotor_wiring):
     results =[]
     for i in range(26):
         shift = alphaord(rotor_wiring[i]) - i
         results.append(shift)    
     return results
-def shift_num(n, offset):
-    result = n + offset
-    while result < 0:
-        result += 26
-    return result % 26
 def shift_char(c, offset):
     return ordalpha(shift_num(alphaord(c), offset))
 def self_test():
@@ -51,6 +57,8 @@ def self_test():
         else:
             print 'Success'
     shifts = construct_shifts(ROTOR_I_WIRING)
+    reverse_shifts = construct_reverse_shifts(ROTOR_I_WIRING)
+
     for test in testvec2:
         print 'Testing that offset at position %d is %d' % test
         try:
@@ -63,6 +71,16 @@ def self_test():
         except:
             print 'FAIL: Out of bounds'
             has_failed = True
+    print 'Testing reverse shifts'
+    for test in testvec2:
+        position = shift_num(test[1] + test[0])
+        offset = -shift_num(test[1])
+        print 'Testing that offset at position %d is %d' % (position, offset)
+        if shift_num(reverse_shifts[position]) != shift_num(offset):
+            print 'Fail. Got %d ' % shift_num(reverse_shifts[position])
+            has_failed = True
+        else:
+            print 'Success'
     for test in testvec3:
         print 'Testing that shifting %s by %d is %s' % test
         if shift_char(test[0], test[1]) != test[2]:
