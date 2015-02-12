@@ -31,7 +31,10 @@ int main()
 	ASSERT_EQUAL(test_shifts[0], 4);
 	ASSERT_EQUAL(test_shifts[1], 9);
 	ASSERT_EQUAL(test_shifts[6], -3);
-
+    std::vector<int> test_reverse_shifts = construct_reverse_shifts(ROTOR_I_WIRING);
+	ASSERT_EQUAL(shift_num(test_reverse_shifts[4]), 22);
+	ASSERT_EQUAL(shift_num(test_reverse_shifts[10]), 17);
+	ASSERT_EQUAL(shift_num(test_reverse_shifts[3]), 3);
 	ASSERT_EQUAL(shift_char('A', 26), 'A');
 	ASSERT_EQUAL(shift_char('A', -26), 'A');
 	ASSERT_EQUAL(shift_char('A', 1), 'B');

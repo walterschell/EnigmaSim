@@ -13,7 +13,8 @@ inline char ordalpha(int n)
 	return (char)(n + (int)'A');
 }
 std::vector<int> construct_shifts(const std::string &wiring);
-int shift_num(int num, int offset);
+std::vector<int> construct_reverse_shifts(const std::string &wiring);
+int shift_num(int num, int offset=0);
 char shift_char(char c, int offset);
 
 
