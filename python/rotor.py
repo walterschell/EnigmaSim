@@ -11,15 +11,27 @@ ROTOR_III_WIRING = 'BDFHJLCPRTXVZNYEIWGAKMUSQO'
 ROTOR_IV_WIRING  = 'ESOVPZJAYQUIRHXLNFTGKDCMWB'
 ROTOR_V_WIRING   = 'VZBRGITYUPSDNHLXAWMJQOFECK'
 
+UKW_A_WIRING = 'EJMZALYXVBWFCRQUONTSPIKHGD'
+UKW_B_WIRING = 'YRUHQSLDPXNGOKMIEBFZCWVJAT'
+UKW_C_WIRING = 'FVPJIAOYEDRZXWGCTKUQSBNMHL'
+
 ROTOR_I_TURNOVERS   = ['Q']
 ROTOR_II_TURNOVERS  = ['E']
 ROTOR_III_TURNOVERS = ['V']
 ROTOR_IV_TURNOVERS  = ['J']
 ROTOR_V_TURNOVERS   = ['Z']
 
+class Wheel:
+    def __init__(self, rotor_wiring):
+        self.forward_shifts = construct_shifts(rotor_wiring)
 
-class Rotor:
+    def translate_forward(self, char):
+        cumulative_rotor_rotation = 0
+        shift_index = shift_num(alphaord(char), cumulative_rotor_rotation)
+        return shift_char(char, self.forward_shifts[shift_index])
+class Rotor(Wheel):
     def __init__(self, rotor_wiring, turnovers, ring_setting):
+        Wheel.__init__(self, rotor_wiring)
         self.forward_shifts = construct_shifts(rotor_wiring)
         self.reverse_shifts = construct_reverse_shifts(rotor_wiring)
         self._window_position = 0
