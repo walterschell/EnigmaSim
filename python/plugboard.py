@@ -8,7 +8,7 @@ from utils import construct_reverse_shifts
 class Plugboard:
     def __init__(self, plugboard_settings):
         swaps = plugboard_settings.split()
-        self.shifts = 260 * [0]
+        self.shifts = 26 * [0]
         for pair in swaps:
             from_index = alphaord(pair[0])
             to_index = alphaord(pair[1])
