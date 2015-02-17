@@ -19,14 +19,15 @@ ROTOR_V_TURNOVERS   = ['Z']
 
 
 class Rotor:
-    def __init__(self, wiring, turnovers, ring_setting):
+    def __init__(self, rotor_wiring, turnovers, ring_setting):
         self.forward_shifts = construct_shifts(rotor_wiring)
         self.reverse_shifts = construct_reverse_shifts(rotor_wiring)
         self._window_position = 0
-        self.ring_setting = ring_setting - 1
+        self.ring_setting = - (ring_setting - 1)
+        self.turnovers = turnovers[:]
 
     def set_window_position(self, new_position):
-        self._window_postion = shift_num(new_position, -1)
+        self._window_position = shift_num(new_position, -1)
     def get_window_position(self):
         return shift_num(self._window_position, 1)
 
@@ -39,6 +40,12 @@ class Rotor:
         shift_index = shift_num(alphaord(char), cumulative_rotor_rotation)
         return shift_char(char, self.reverse_shifts[shift_index])
 
+    def step(self):
+        should_step = False
+        if ordalpha(self._window_position) in self.turnovers:
+            should_step = True
+        self._window_position = shift_num(self._window_position, 1)
+        return should_step
 def self_test():
     rotor = Rotor(ROTOR_I_WIRING, ROTOR_I_TURNOVERS, 1)
     ALPHABET = ''
@@ -53,9 +60,39 @@ def self_test():
     else:
         print 'FAILURE: Got %s' % rotor_i_wiring
     print 'Testing that reverse translation of wiring equal alphabet'
-    alp
+    alphabet = ''
+    for c in ROTOR_I_WIRING:
+        alphabet += rotor.translate_reverse(c)
+    if alphabet == ALPHABET:
+        print 'SUCCESS!'
+    else:
+        print 'FAILURE: Got %s' % alphabet
+    print 'Testing that stepping functions properly'
+    rotor.step()
+    if rotor.translate_forward('A') == 'J':
+        print 'SUCCESS!'
+    else:
+        print 'FAILURE'
+    rotor = Rotor(ROTOR_I_WIRING, ROTOR_I_TURNOVERS, 2)
+    print 'Testing that ring setting works (Test 1)'
+    if rotor.translate_forward('A') == 'K':
+        print 'SUCCESS!'
+    else:
+        print 'FAILURE: Got %s' % rotor.translate_forward('A')
+    print 'Testing that ring setting works (Test 2)'
+    rotor = Rotor(ROTOR_I_WIRING, ROTOR_I_TURNOVERS, 6)
+    rotor.set_window_position(25)
+    if rotor.translate_forward('A') == 'W':
+        print 'SUCCESS!'
+    else:
+        print 'FAILURE: Got %s' % rotor.translate_forward('A')
+    print 'Testing that ring setting works (Reverse Direction)'
+    if rotor.translate_reverse('W') == 'A':
+        print 'SUCCESS!'
+    else:
+        print 'FAILURE'    
+    
 
-
-if __name__ == '__test__':
+if __name__ == '__main__':
     self_test()
 
