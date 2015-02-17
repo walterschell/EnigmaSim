@@ -4,6 +4,7 @@ from utils import shift_num
 from utils import shift_char
 from utils import construct_shifts
 from utils import construct_reverse_shifts
+import re
 
 ROTOR_I_WIRING   = 'EKMFLGDQVZNTOWYHXUSPAIBRCJ'
 ROTOR_II_WIRING  = 'AJDKSIRUXBLHWTMCQGZNPYFVOE'
@@ -14,12 +15,14 @@ ROTOR_V_WIRING   = 'VZBRGITYUPSDNHLXAWMJQOFECK'
 UKW_A_WIRING = 'EJMZALYXVBWFCRQUONTSPIKHGD'
 UKW_B_WIRING = 'YRUHQSLDPXNGOKMIEBFZCWVJAT'
 UKW_C_WIRING = 'FVPJIAOYEDRZXWGCTKUQSBNMHL'
+wirings = {}
 
 ROTOR_I_TURNOVERS   = ['Q']
 ROTOR_II_TURNOVERS  = ['E']
 ROTOR_III_TURNOVERS = ['V']
 ROTOR_IV_TURNOVERS  = ['J']
 ROTOR_V_TURNOVERS   = ['Z']
+turnovers = {}
 
 class Wheel:
     def __init__(self, rotor_wiring):
@@ -104,7 +107,13 @@ def self_test():
     else:
         print 'FAILURE'    
     
+for varname in dir():
+    if re.search(r'(ROTOR|UKW)_.+_WIRING', varname):
+        wirings[varname.rstrip('_WIRING')] = vars()[varname]
 
+for varname in dir():
+    if re.search(r'ROTOR_.+_TURNOVERS', varname):
+        turnovers[varname.rstrip('_TURNOVERS')] = vars()[varname]
 if __name__ == '__main__':
     self_test()
 
