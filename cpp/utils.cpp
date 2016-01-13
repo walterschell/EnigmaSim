@@ -35,3 +35,20 @@ char shift_char(char c, int offset)
 {
 	return ordalpha(shift_num(alphaord(c), offset));
 }
+std::vector< std::string > split(const std::string& data)
+{
+    std::vector<std::string> results;
+    int index=0;
+    int last_index = 0;
+    while (1)
+    {
+        index = data.find(" ", last_index);
+        results.push_back(data.substr(last_index, index - last_index));
+        last_index = index + 1;
+        if (index == std::string::npos)
+        {
+            return results;
+        }
+    }
+}
+
