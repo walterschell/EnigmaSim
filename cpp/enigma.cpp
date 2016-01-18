@@ -45,17 +45,17 @@ void Enigma::step_rotors()
 }
 std::string Enigma::process_message(const std::string& message)
 {
-    std::string results;
-    for (char c : message)
+    std::string result;
+    for (auto c : message)
     {
-        char p = push_button(c);
-        if (p == 'X')
+        char result_c = push_button(c);
+        if (result_c == 'X')
         {
-            p = ' ';
+            result_c = ' ';
         }
-        results += p;
+        result += result_c;
     }
-    return results;
+    return result;
 }
 
 char Enigma::push_button(char c)
@@ -66,15 +66,15 @@ char Enigma::push_button(char c)
 
 char Enigma::translate_char(char c) const
 {
-    char forward_char = plugboard.translate_char(c);
-    forward_char = rotors[2].translate_forward(forward_char);
-    forward_char = rotors[1].translate_forward(forward_char);
-    forward_char = rotors[0].translate_forward(forward_char);
-    char reverse_char = reflector.translate_forward(forward_char);
-    reverse_char = rotors[0].translate_reverse(reverse_char);
-    reverse_char = rotors[1].translate_reverse(reverse_char);
-    reverse_char = rotors[2].translate_reverse(reverse_char);
-    char final_char = plugboard.translate_char(reverse_char);
+    char forward_c = plugboard.translate_char(c);
+    forward_c = rotors[2].translate_forward(forward_c);
+    forward_c = rotors[1].translate_forward(forward_c);
+    forward_c = rotors[0].translate_forward(forward_c);
+    char reverse_c = reflector.translate_forward(forward_c);
+    reverse_c = rotors[0].translate_reverse(reverse_c);
+    reverse_c = rotors[1].translate_reverse(reverse_c);
+    reverse_c = rotors[2].translate_reverse(reverse_c);
+    char final_char = plugboard.translate_char(reverse_c);
     return final_char;
 }
 

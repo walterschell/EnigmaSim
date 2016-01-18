@@ -15,15 +15,44 @@ ROTOR_V_WIRING   = 'VZBRGITYUPSDNHLXAWMJQOFECK'
 UKW_A_WIRING = 'EJMZALYXVBWFCRQUONTSPIKHGD'
 UKW_B_WIRING = 'YRUHQSLDPXNGOKMIEBFZCWVJAT'
 UKW_C_WIRING = 'FVPJIAOYEDRZXWGCTKUQSBNMHL'
-wirings = {}
 
 ROTOR_I_TURNOVERS   = ['Q']
 ROTOR_II_TURNOVERS  = ['E']
 ROTOR_III_TURNOVERS = ['V']
 ROTOR_IV_TURNOVERS  = ['J']
 ROTOR_V_TURNOVERS   = ['Z']
-turnovers = {}
+rotor_descriptions = {
+                        'I' : {
+                                'wiring' : ROTOR_I_WIRING,
+                                'turnovers' : ROTOR_I_TURNOVERS
+                              },
 
+                        'II' : {
+                                'wiring' : ROTOR_II_WIRING,
+                                'turnovers' : ROTOR_II_TURNOVERS
+                              },
+                        'III' : {
+                                'wiring' : ROTOR_III_WIRING,
+                                'turnovers' : ROTOR_III_TURNOVERS
+                              },
+                        'IV' : {
+                                'wiring' : ROTOR_IV_WIRING,
+                                'turnovers' : ROTOR_IV_TURNOVERS
+                              },
+                        'V' : {
+                                'wiring' : ROTOR_V_WIRING,
+                                'turnovers' : ROTOR_V_TURNOVERS
+                              },
+                        'UKW_A' : {
+                                'wiring' : UKW_A_WIRING,
+                              },
+                        'UKW_B' : {
+                                'wiring' : UKW_B_WIRING,
+                              },
+                        'UKW_C' : {
+                                'wiring' : UKW_C_WIRING,
+                              },
+                }
 class Wheel:
     def __init__(self, rotor_wiring):
         self.forward_shifts = construct_shifts(rotor_wiring)
@@ -42,9 +71,9 @@ class Rotor(Wheel):
         self.turnovers = turnovers[:]
 
     def set_window_position(self, new_position):
-        self._window_position = shift_num(new_position, -1)
+        self._window_position = alphaord(new_position)
     def get_window_position(self):
-        return shift_num(self._window_position, 1)
+        return ordalpha(self._window_position)
 
     def translate_forward(self, char):
         cumulative_rotor_rotation = self._window_position + self.ring_setting
@@ -54,7 +83,10 @@ class Rotor(Wheel):
         cumulative_rotor_rotation = self._window_position + self.ring_setting
         shift_index = shift_num(alphaord(char), cumulative_rotor_rotation)
         return shift_char(char, self.reverse_shifts[shift_index])
-
+    def in_turnover_position(self):
+        if self.get_window_position() in self.turnovers:
+            return True
+        return False
     def step(self):
         should_step = False
         if ordalpha(self._window_position) in self.turnovers:
@@ -96,7 +128,7 @@ def self_test():
         print 'FAILURE: Got %s' % rotor.translate_forward('A')
     print 'Testing that ring setting works (Test 2)'
     rotor = Rotor(ROTOR_I_WIRING, ROTOR_I_TURNOVERS, 6)
-    rotor.set_window_position(25)
+    rotor.set_window_position('Y')
     if rotor.translate_forward('A') == 'W':
         print 'SUCCESS!'
     else:
@@ -107,13 +139,6 @@ def self_test():
     else:
         print 'FAILURE'    
     
-for varname in dir():
-    if re.search(r'(ROTOR|UKW)_.+_WIRING', varname):
-        wirings[varname.rstrip('_WIRING')] = vars()[varname]
-
-for varname in dir():
-    if re.search(r'ROTOR_.+_TURNOVERS', varname):
-        turnovers[varname.rstrip('_TURNOVERS')] = vars()[varname]
 if __name__ == '__main__':
     self_test()
 
